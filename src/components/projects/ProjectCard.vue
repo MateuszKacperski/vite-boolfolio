@@ -1,7 +1,7 @@
 <script>
 export default {
     name: 'ProjectCard',
-    props: { project: Object },
+    props: { project: Object, isProjectShow: Boolean },
     computed: {
         //funzione per ricavare l'abstract dalle description dei projects
         getAbstract() {
@@ -30,13 +30,28 @@ export default {
 </script>
 
 <template>
-    <div class="col-4">
+    <div class="col">
         <div class="card mb-3">
-            <img src="..." class="card-img-top" alt="...">
+            <img @if="project.image" :src="project.image" class="card-img-top" :alt="project.title">
             <div class="card-body">
-                <h5 class="card-title">{{ project.title }}</h5>
-                <p class="card-text">{{ getAbstract }}</p>
-                <p class="card-text"><small class="text-body-secondary">{{ getDate }}</small></p>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <RouterLink v-if="!isProjectShow" class="btn btn-primary" :to="`/projects/${project.slug}`"><i
+                            class="fa-solid fa-eye"></i></RouterLink>
+                </div>
+                <p class="card-text">{{ isProjectShow ? project.description : getAbstract }}</p>
+                <div v-if="project.technologies?.length">
+                    <span v-for="technology in project.technologies" :key="technology.id"
+                        class="badge rounded-pill me-2 my-3" :class="`text-bg-${technology.color}`">
+                        {{ technology.label }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="card-text"><small class="text-body-secondary">{{ getDate }}</small></p>
+                    <span v-if="project.type" class="badge" :style="{ backgroundColor: project.type.color }">
+                        {{ project.type.label }}</span>
+                </div>
+
+
             </div>
         </div>
     </div>
